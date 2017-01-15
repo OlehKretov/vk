@@ -16,32 +16,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `city`
---
-
-DROP TABLE IF EXISTS `city`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `city` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
-  `country_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_city_country1_idx` (`country_id`),
-  CONSTRAINT `fk_city_country1` FOREIGN KEY (`country_id`) REFERENCES `country` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `city`
---
-
-LOCK TABLES `city` WRITE;
-/*!40000 ALTER TABLE `city` DISABLE KEYS */;
-/*!40000 ALTER TABLE `city` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `community`
 --
 
@@ -49,11 +23,10 @@ DROP TABLE IF EXISTS `community`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `community` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(45) NOT NULL,
-  `post` text,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `communityid` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`communityid`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -62,34 +35,8 @@ CREATE TABLE `community` (
 
 LOCK TABLES `community` WRITE;
 /*!40000 ALTER TABLE `community` DISABLE KEYS */;
+INSERT INTO `community` VALUES (1,'Kinomaniya'),(2,'Sarkazm'),(3,'Korporatsia Zla'),(4,'Borshch'),(5,'Muzyka'),(6,'Live');
 /*!40000 ALTER TABLE `community` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `community_has_contact`
---
-
-DROP TABLE IF EXISTS `community_has_contact`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `community_has_contact` (
-  `community_id` int(11) NOT NULL,
-  `contact_id` int(11) NOT NULL,
-  PRIMARY KEY (`community_id`,`contact_id`),
-  KEY `fk_community_has_contact_contact1_idx` (`contact_id`),
-  KEY `fk_community_has_contact_community1_idx` (`community_id`),
-  CONSTRAINT `fk_community_has_contact_community1` FOREIGN KEY (`community_id`) REFERENCES `community` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_community_has_contact_contact1` FOREIGN KEY (`contact_id`) REFERENCES `contact` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `community_has_contact`
---
-
-LOCK TABLES `community_has_contact` WRITE;
-/*!40000 ALTER TABLE `community_has_contact` DISABLE KEYS */;
-/*!40000 ALTER TABLE `community_has_contact` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -100,21 +47,21 @@ DROP TABLE IF EXISTS `contact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `contact` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(45) NOT NULL,
-  `second_name` varchar(45) NOT NULL,
-  `gender` enum('мужской','женский') NOT NULL,
-  `birthday` date NOT NULL,
-  `phone` varchar(45) DEFAULT NULL,
-  `email` varchar(45) DEFAULT NULL,
-  `country_id` int(11) NOT NULL,
-  `city_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_contact_country1_idx` (`country_id`),
-  KEY `fk_contact_city1_idx` (`city_id`),
-  CONSTRAINT `fk_contact_country1` FOREIGN KEY (`country_id`) REFERENCES `country` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_contact_city1` FOREIGN KEY (`city_id`) REFERENCES `city` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `contactid` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) DEFAULT NULL,
+  `surname` varchar(50) DEFAULT NULL,
+  `gender` enum('man','female') DEFAULT NULL,
+  `birthday` date DEFAULT NULL,
+  `phone` varchar(50) DEFAULT NULL,
+  `email` varchar(50) DEFAULT NULL,
+  `countryid` int(11) NOT NULL,
+  `sityid` int(11) NOT NULL,
+  PRIMARY KEY (`contactid`),
+  KEY `fk_country_contact` (`countryid`),
+  KEY `fk_sity_contact` (`sityid`),
+  CONSTRAINT `fk_country_contact` FOREIGN KEY (`countryid`) REFERENCES `country` (`countryid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_sity_contact` FOREIGN KEY (`sityid`) REFERENCES `sity` (`sityid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -123,7 +70,37 @@ CREATE TABLE `contact` (
 
 LOCK TABLES `contact` WRITE;
 /*!40000 ALTER TABLE `contact` DISABLE KEYS */;
+INSERT INTO `contact` VALUES (4,'Petr','Petrov','man','1983-07-11','0957384213','ppetr@gmail.com',1,2),(5,'Ivanna','Ivanova','female','1990-12-03','0993444816','iivanna@gmail.com',1,3),(6,'Svetlana','Sidorova','female','1984-10-24','0985964824','sidsvet@ya.ru',3,4),(7,'Vasiliy','Pupkin','man','1991-01-06','0996137373','pupvas@ya.ru',4,5);
 /*!40000 ALTER TABLE `contact` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `contact_community`
+--
+
+DROP TABLE IF EXISTS `contact_community`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `contact_community` (
+  `concomid` int(11) NOT NULL AUTO_INCREMENT,
+  `contactid` int(11) NOT NULL,
+  `communityid` int(11) NOT NULL,
+  PRIMARY KEY (`concomid`),
+  KEY `fk_contact_community` (`contactid`),
+  KEY `fk_community_contact` (`communityid`),
+  CONSTRAINT `fk_contact_community` FOREIGN KEY (`contactid`) REFERENCES `contact` (`contactid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_community_contact` FOREIGN KEY (`communityid`) REFERENCES `community` (`communityid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `contact_community`
+--
+
+LOCK TABLES `contact_community` WRITE;
+/*!40000 ALTER TABLE `contact_community` DISABLE KEYS */;
+INSERT INTO `contact_community` VALUES (1,4,1),(2,4,2),(3,5,1),(4,5,3),(5,5,4),(6,6,4),(7,6,1),(8,6,5),(9,7,1),(10,7,6);
+/*!40000 ALTER TABLE `contact_community` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -134,10 +111,10 @@ DROP TABLE IF EXISTS `country`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `country` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `countryid` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`countryid`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -146,6 +123,7 @@ CREATE TABLE `country` (
 
 LOCK TABLES `country` WRITE;
 /*!40000 ALTER TABLE `country` DISABLE KEYS */;
+INSERT INTO `country` VALUES (1,'Ukraine'),(3,'Russia'),(4,'Canada');
 /*!40000 ALTER TABLE `country` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -157,13 +135,13 @@ DROP TABLE IF EXISTS `images`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `images` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `url` varchar(255) NOT NULL,
-  `contact_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_images_contact1_idx` (`contact_id`),
-  CONSTRAINT `fk_images_contact1` FOREIGN KEY (`contact_id`) REFERENCES `contact` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `imagesid` int(11) NOT NULL AUTO_INCREMENT,
+  `url` varchar(255) DEFAULT NULL,
+  `contactid` int(11) NOT NULL,
+  PRIMARY KEY (`imagesid`),
+  KEY `fk_contact_images` (`contactid`),
+  CONSTRAINT `fk_contact_images` FOREIGN KEY (`contactid`) REFERENCES `contact` (`contactid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -172,7 +150,35 @@ CREATE TABLE `images` (
 
 LOCK TABLES `images` WRITE;
 /*!40000 ALTER TABLE `images` DISABLE KEYS */;
+INSERT INTO `images` VALUES (1,'https://vk.com/photo-6566_4099',4),(2,'https://vk.com/photo-6556_4469',4),(3,'https://vk.com/photo-12456_48459',4),(4,'https://vk.com/photo-12246_4129',5),(5,'https://vk.com/photo-8996_1125',5),(6,'https://vk.com/photo-2576_1525',6),(7,'https://vk.com/photo-1265_65174',6),(8,'https://vk.com/photo-5877_93624',6),(9,'https://vk.com/photo-2257_6547',7);
 /*!40000 ALTER TABLE `images` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sity`
+--
+
+DROP TABLE IF EXISTS `sity`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sity` (
+  `sityid` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) DEFAULT NULL,
+  `countryid` int(11) NOT NULL,
+  PRIMARY KEY (`sityid`),
+  KEY `fk_country_sity` (`countryid`),
+  CONSTRAINT `fk_country_sity` FOREIGN KEY (`countryid`) REFERENCES `country` (`countryid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sity`
+--
+
+LOCK TABLES `sity` WRITE;
+/*!40000 ALTER TABLE `sity` DISABLE KEYS */;
+INSERT INTO `sity` VALUES (2,'Kharkov',1),(3,'Kiev',1),(4,'Moscow',3),(5,'Toronto',4);
+/*!40000 ALTER TABLE `sity` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -184,4 +190,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-01-12 17:14:31
+-- Dump completed on 2017-01-16  0:40:10
